@@ -7,6 +7,7 @@ public class MissileTower extends Building {
 	int missiles = 20;
 	public MissileTower(int x){
 		super(x);
+		type = Type.TOWER;
 		c = Color.BLUE;
 		allTowers.add(this);
 	}

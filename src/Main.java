@@ -43,20 +43,20 @@ public class Main extends ConstructorClass {
 		g.setFont(font);
 		
 		if(!gracePeriod && !destroyed){
-			if(rand.nextInt(100) == 13 && Building.all.size() != Building.destroyed && missiles != 0){
+			if(rand.nextInt(100) == 13 && (City.allCities.size() != Building.destroyed && missiles != 0)){
 				Missile.spawnEnemyMissile();
 				missiles --;
 			}
-			else if(Building.all.size() == Building.destroyed){
+			else if(City.allCities.size() == Building.destroyed){
 				destroyed = true;
 			}
 
 			Missile.updateAll(g);
-			
+			System.out.println(Building.all.size() - MissileTower.allTowers.size() + " exist, " + Building.destroyed + " destroyed");
 			for(int i = 0; i<Missile.all.size(); i++){
 				for(int j = 0; j<Building.all.size(); j++){
 					if(Missile.all.get(i).isExploding && Missile.all.get(i).team == 1 && Building.dist(Building.all.get(j),Missile.all.get(i)) < 15){
-						if(!Building.all.get(j).isDisabled){
+						if(!Building.all.get(j).isDisabled && Building.all.get(j).type == Building.Type.CITY){
 							Building.destroyed++;
 						}
 						Building.all.get(j).isDisabled = true;
@@ -64,7 +64,7 @@ public class Main extends ConstructorClass {
 				}
 			}
 			
-			if(missiles == 0 && Building.all.size() != Building.destroyed && Missile.all.size() == 0){
+			if(missiles == 0 && City.allCities.size() != Building.destroyed && Missile.all.size() == 0){
 				wave++;
 				Missile.enemySpeedMultiplier = getSpeedMultiplier(wave);
 				missiles = getMissileCount(wave);
@@ -74,10 +74,13 @@ public class Main extends ConstructorClass {
 				bonusMissiles = 0;
 				for(int i = 0; i<Building.all.size();i++){
 					if(Building.all.get(i).isDisabled == false){
-						score += 100;
-						bonusBuildings += 100;
+						score += 200;
+						bonusBuildings += 200;
 					}
-					Building.all.get(i).isDisabled = false;
+					
+					if(Building.all.get(i).getClass() == MissileTower.allTowers.get(0).getClass()){
+						Building.all.get(i).isDisabled = false;
+					}
 				}
 				
 				for(int i = 0; i<MissileTower.allTowers.size(); i++){
@@ -123,9 +126,11 @@ public class Main extends ConstructorClass {
 	
 
 	public void mousePressed(MouseEvent evt){
-		MissileTower.allTowers.get(MissileTower.findLeastDistance(evt)).fireMissile(evt);
-		MissileTower.allTowers.get(MissileTower.findLeastDistance(evt)).missiles--;
-		if(MissileTower.allTowers.get(MissileTower.findLeastDistance(evt)).missiles <= -1){
+		if(!gracePeriod){
+			MissileTower.allTowers.get(MissileTower.findLeastDistance(evt)).fireMissile(evt);
+			MissileTower.allTowers.get(MissileTower.findLeastDistance(evt)).missiles--;
+		}
+		if(MissileTower.allTowers.get(MissileTower.findLeastDistance(evt)).missiles <= 0){
 			MissileTower.allTowers.get(MissileTower.findLeastDistance(evt)).isDisabled = true;
 		}
 		super.mousePressed(evt);
@@ -134,11 +139,11 @@ public class Main extends ConstructorClass {
 	public void keyPressed(KeyEvent evt) {}
 	
 	public int getMissileCount(int wave){
-		return 10 +2*(int)(Math.sqrt(5*wave));
+		return 10 +3*(int)(Math.sqrt(10*wave));
 	}
 	
 	public double getSpeedMultiplier(int wave){
-		return .5*Math.pow(10, -5)*Math.pow(wave, 2) + .25;
+		return .00225*Math.pow(wave, 2) + .33;
 	}
 }
 

@@ -10,6 +10,8 @@ abstract class Building {
 	public Image img;
 	public boolean isDisabled = false;
 	public static int destroyed = 0;
+	public enum Type{NULL,CITY,TOWER};
+	public Type type = Type.NULL;
 	public Building(int x){
 		this.x = x;
 		all.add(this);

@@ -57,7 +57,7 @@ public class Missile {
 				}
 				
 				for(int j = 0; j< all.size(); j++){
-					if(all.get(j).isExploding && (all.get(i).team != all.get(j).team || all.get(j).team == 1) && dist(all.get(i),all.get(j)) < (4 + all.get(j).explosionAge*3/4)/2){
+					if(all.get(j).isExploding && (all.get(i).team != all.get(j).team || all.get(j).team == 1) && dist(all.get(i),all.get(j)) < getExplosionSize(all.get(j).explosionAge)/2){
 						all.get(i).isExploding = true;
 					}
 				}
@@ -83,7 +83,7 @@ public class Missile {
 		int startY = -5;
 		Building target = null;
 		
-		while(true && Building.all.size() != Building.destroyed){
+		while(Building.all.size() != Building.destroyed){
 			target = Building.all.get(rand.nextInt(9));
 			if(!target.isDisabled){
 				break;
@@ -93,7 +93,6 @@ public class Missile {
 				break;
 			}
 			
-			System.out.println("Stuck in loop: " + Building.destroyed + " " + Building.all.size());
 		}
 		int targetX = target.x + 10;
 		double unitVector = Math.sqrt(Math.pow(targetX - startX, 2) + Math.pow(590 - startY, 2));
