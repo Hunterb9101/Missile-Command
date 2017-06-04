@@ -50,10 +50,20 @@ public class Missile {
 			}
 			else{
 				if(all.get(i).team == 0){
-					g.setColor(Color.BLUE);
+					if(Main.colorChange){
+						g.setColor(new Color(new Random().nextInt(128)+128,new Random().nextInt(128)+128,new Random().nextInt(128)+128));
+					}
+					else{
+						g.setColor(Color.BLUE);
+					}
 				}
 				else{
-					g.setColor(Color.RED);
+					if(Main.colorChange){
+						g.setColor(new Color(new Random().nextInt(128)+128,new Random().nextInt(128)+128,new Random().nextInt(128)+128));
+					}
+					else{
+						g.setColor(Color.RED);
+					}
 				}
 				
 				for(int j = 0; j< all.size(); j++){

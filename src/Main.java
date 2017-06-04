@@ -17,7 +17,12 @@ public class Main extends ConstructorClass {
 	long gracePeriodStart = System.currentTimeMillis();
 	boolean gracePeriod = true;
 	boolean destroyed = false;
+	static boolean colorChange = false;
 	BufferedImage sample;
+	
+	char currKeyPress = ' ';
+	char lastKeyPress = ' ';
+	
 	Font f = new Font("serif", Font.PLAIN, 32);
 	Random rand = new Random();
 	public static int score = 0;
@@ -52,7 +57,7 @@ public class Main extends ConstructorClass {
 			}
 
 			Missile.updateAll(g);
-			System.out.println(Building.all.size() - MissileTower.allTowers.size() + " exist, " + Building.destroyed + " destroyed");
+			
 			for(int i = 0; i<Missile.all.size(); i++){
 				for(int j = 0; j<Building.all.size(); j++){
 					if(Missile.all.get(i).isExploding && Missile.all.get(i).team == 1 && Building.dist(Building.all.get(j),Missile.all.get(i)) < 15){
@@ -73,7 +78,7 @@ public class Main extends ConstructorClass {
 				bonusBuildings = 0;
 				bonusMissiles = 0;
 				for(int i = 0; i<Building.all.size();i++){
-					if(Building.all.get(i).isDisabled == false){
+					if(Building.all.get(i).isDisabled == false && Building.all.get(i).getClass() != MissileTower.allTowers.get(0).getClass()){
 						score += 200;
 						bonusBuildings += 200;
 					}
@@ -91,7 +96,12 @@ public class Main extends ConstructorClass {
 			}
 		}
 		else if(gracePeriod && !destroyed){
-			g.setColor(Color.BLUE);
+			if(Main.colorChange){
+				g.setColor(new Color(new Random().nextInt(128)+128,new Random().nextInt(128)+128,new Random().nextInt(128)+128));
+			}
+			else{
+				g.setColor(Color.BLUE);
+			}
 			g.drawString("Wave: " + wave, 300, 300);
 			g.drawString("Bonus - Buildings: " + bonusBuildings, 300, 340);
 			g.drawString("Bonus - Missiles: " + bonusMissiles, 300, 370);
@@ -107,7 +117,13 @@ public class Main extends ConstructorClass {
 		
 		Building.drawAll(g);
 		
-		g.setColor(Color.BLUE);
+		if(Main.colorChange){
+			g.setColor(new Color(new Random().nextInt(128)+128,new Random().nextInt(128)+128,new Random().nextInt(128)+128));
+		}
+		else{
+			g.setColor(Color.BLUE);
+		}
+		
 		g.drawString("Score: " + score, 15, 35);
 	}
 	
@@ -136,7 +152,23 @@ public class Main extends ConstructorClass {
 		super.mousePressed(evt);
 	}
 	
-	public void keyPressed(KeyEvent evt) {}
+	public void keyPressed(KeyEvent evt) {
+		lastKeyPress = currKeyPress;
+		currKeyPress = evt.getKeyChar();
+		if(lastKeyPress == 'h' && currKeyPress == 'b'){
+			for(int i = 0; i<MissileTower.allTowers.size(); i++){
+				MissileTower.allTowers.get(i).missiles = 999;
+			}
+		}
+		else if(lastKeyPress == 'n' && currKeyPress == 'o'){
+			for(int i = 0; i<Missile.all.size(); i++){
+				Missile.all.get(i).isExploding = true;
+			}
+		}
+		else if(currKeyPress == 'r'){
+			colorChange = true;
+		}
+	}
 	
 	public int getMissileCount(int wave){
 		return 10 +3*(int)(Math.sqrt(10*wave));
